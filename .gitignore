@@ -1,0 +1,12 @@
+# Virtual environment standar
+.venv/
+venv/
+env/
+ENV/
+
+# File buatan Python lainnya
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python

@@ -7,7 +7,7 @@ import subprocess
 MPV_PATH = ""
 
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-      "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")
+      "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36")
 
 _FOLDER_INI = os.path.dirname(os.path.abspath(__file__))   # folder scraaper
 _FOLDER_ROOT = os.path.dirname(_FOLDER_INI)                # folder main.py
@@ -101,7 +101,7 @@ def putar(url, judul="", referer=None):
         mpv,
         "--no-config",
         "--idle=no",        # kalau gagal, mpv tutup sendiri
-        "--ytdl=no",        # link sudah langsung, tidak lewat yt-dlp
+        "--ytdl=yes",        # link sudah langsung, tidak lewat yt-dlp
         f"--log-file={LOG}",
         f"--force-media-title={judul}",
         f"--user-agent={UA}",

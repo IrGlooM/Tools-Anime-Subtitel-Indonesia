@@ -4,6 +4,10 @@ from urllib.parse import urljoin
 import requests
 from bs4 import BeautifulSoup
 
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+import time
+
 # ====== UBAH SESUAI WEB ======
 BASE_URL = "https://otakudesu.blog"
 HEADERS = {"User-Agent": "Mozilla/5.0"}
@@ -103,13 +107,38 @@ def _telusuri(url, referer, depth):
 
 
 def ambil_video(url_episode):
-    """Return (link_video, referer) atau (None, None)."""
-    hasil = _telusuri(url_episode, None, 0)
-    if not hasil:
-        return None, None
-    video, referer = hasil
+    """Membuka browser otomatis untuk melewati proteksi dan mengambil link video akhir."""
+    UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+    
+    options = Options()
+    options.add_argument("--headless")  # Jalankan di latar belakang (ubah jadi non-headless jika ingin lihat)
+    options.add_argument("--disable-gpu")
+    options.add_argument("--no-sandbox")
+    options.add_argument(f"user-agent={UA if 'UA' in globals() else 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'}")
 
-    if "googlevideo.com" not in video:
-        video, rantai = ikuti_redirect(video, referer=referer)
-        _log("rantai redirect:", " -> ".join(u.split("/")[2] for u in rantai))
-    return video, referer
+    driver = webdriver.Chrome(options=options)
+    video_url = None
+    referer_url = url_episode
+
+    try:
+        driver.get(url_episode)
+        time.sleep(3)  # Beri waktu iframe/JavaScript termuat sempurna
+        
+        # Cari elemen video atau iframe yang memuat video
+        frames = driver.find_elements("tag name", "iframe")
+        for frame in frames:
+            src = frame.get_attribute("src")
+            if src:
+                driver.get(src)
+                time.sleep(2)
+        
+        # Ambil sumber video atau cari pola video dari halaman aktif
+        page_source = driver.page_source
+        video_url = _cari_video(page_source)
+        
+    except Exception as e:
+        print(f"Gagal mengambil via browser: {e}")
+    finally:
+        driver.quit()
+
+    return video_url, referer_url
