@@ -34,7 +34,7 @@ Sebelum menjalankan aplikasi ini, pastikan sistem kamu sudah terinstal:
 Buka terminal (Command Prompt, PowerShell, atau Git Bash) dan jalankan perintah berikut:
 
 ```bash
-git clone https://github.com/IrGlooM/Ani-Cli.git](https://github.com/IrGlooM/Tools-Anime-Subtitel-Indonesia
+git clone https://github.com/IrGlooM/Tools-Anime-Subtitel-Indonesia
 cd Tools-Anime-Subtitel-Indonesia
 ```
 
